@@ -3,12 +3,15 @@ version: "3.8"
 services:
   elasticsearch:
     container_name: elasticsearch
-    image: elasticsearch:8.6.0
+    image: elasticsearch:8.9.0
     restart: always
     environment:
-      - xpack.security.enabled=false
+      - ELASTIC_USERNAME=maktaba
+      - ELASTIC_PASSWORD=maktaba@2022!
+      - xpack.security.enabled=true
       - discovery.type=single-node
       - ingest.geoip.downloader.enabled=false
+      - xpack.security.transport.ssl.enabled=true
     ports:
       - 9200:9200
       - 9300:9300
@@ -19,10 +22,14 @@ services:
 
   kibana:
     container_name: kibana
-    image: kibana:8.6.0
+    image: kibana:8.9.0
     restart: always
     environment:
       - ELASTICSEARCH_HOSTS=http://elasticsearch:9200
+      - ELASTICSEARCH_USERNAME=maktaba
+      - ELASTICSEARCH_PASSWORD=maktaba@2022!
+      - xpack.security.enabled=true
+      - xpack.reporting.roles.enabled=false
     networks:
       - elastic
     volumes:
@@ -31,7 +38,7 @@ services:
       - elasticsearch
     ports:
       - 5601:5601
-  
+
 volumes:
   elastic:
     external: true
